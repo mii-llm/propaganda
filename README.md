@@ -6,4 +6,4 @@ You can see some of the data in the folder data.
 Other data can be scraped from:
 
 - https://partitodemocratico.it/category/comunicati-stampa/
-- ...
+- https://huggingface.co/datasets/Tadorne/amendments
