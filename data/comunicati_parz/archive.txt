@@ -1,0 +1,15 @@
+file JSON:
+    list, ogni elemento è un dict con i campi:
+        group:      "pd" o "fdi"
+        date:       "<YYYY>-<MM>-<DD>T<hh>:<mm>:<ss>+00:00"
+        title:      titolo del comunicato
+        text:       testo del comunicato
+        quotedText: estratto del testo virgolettato
+file XML:
+    root: <entries> contiene elementi <entry>
+    <entry>
+        attributi: group, date come sopra
+        elementi:
+            <title>:        titolo del comunicato
+            <text>:         testo del comunicato
+            <quoted-text>:  estratto del testo virgolettato
