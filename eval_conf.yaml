@@ -1,0 +1,31 @@
+provider: custom_openai
+model: "Qwen/Qwen2.5-7B-Instruct"
+api_key: "EMPTY"
+temperature: 0.0
+max_tokens: 350
+
+system_message: You are a helpful AI Hacker assistant.
+
+# (for custom OpenAI-compatible API)
+provider_kwargs:
+  base_url: http://localhost:8000/v1
+
+rate_limiting:
+  enabled: false
+  requests_per_minute: 15
+
+limit:
+fast: true
+
+data:
+  data_file: ./cybersecurity_eval.jsonl
+  few_shot_file: # ./5_shots.jsonl
+  output_dir: results
+
+num_threads: 30
+
+auto_resume: false
+
+checkpointing:
+  enabled: true
+  checkpoint_interval: 50
