@@ -157,13 +157,11 @@ if __name__ == '__main__':
     fdi = load_dataset('json', data_files='./data/comunicati_parz/fdi.jsonl', split='train')
     pd = load_dataset('json', data_files='./data/comunicati_parz/pd.jsonl', split='train')
 
-    df = fdi.to_pandas()['text']
-    df.to_csv('fdi.csv', index=False, header=False)
 
-    #run(piepline(
-    #    client=client,
-    #    #model="llama-3.1-8b-instant",
-    #    model="llama3.1-8b",
-    #    data=[ fdi],
-    #    batch_size=1
-    #))
+    run(piepline(
+        client=client,
+        #model="llama-3.1-8b-instant",
+        model="llama3.1-8b",
+        data=[pd, fdi],
+        batch_size=1
+    ))
