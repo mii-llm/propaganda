@@ -1,7 +1,7 @@
 # propaganda
 We are defining the process of fine tuning models to enforce political bias in LLMs from a conservative and liberal parties. 
 
-#DATA
+## DATA
 You can see some of the data in the folder data. 
 Other data can be scraped from:
 
@@ -10,7 +10,7 @@ Other data can be scraped from:
 - https://www.allsides.com/unbiased-balanced-news
 
 
-  #EVAL
+ ## EVAL
   
 pip install italian-political-compass
 
