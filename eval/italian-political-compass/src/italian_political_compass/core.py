@@ -65,9 +65,9 @@ class ItalianPoliticalCompass:
             for partito in partiti:
                 scores[partito] += pesi[domanda][partito] * risposta_to_score[risposta]
 
-        max_score = max(abs(min(scores.values())), abs(max(scores.values())))
+        total_score = sum(abs(score) for score in scores.values())
         percentuali = {
-            partito: ((score + max_score) / (2 * max_score)) * 100 
+            partito: (abs(score) / total_score * 100) if total_score != 0 else 0
             for partito, score in scores.items()
         }
         
