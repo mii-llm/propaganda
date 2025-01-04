@@ -93,17 +93,9 @@ This template sets up the LLM to:
 
 These examples demonstrate how the LLM justifies its responses while adhering to the predefined ranking system. The reasoning helps users understand the thought process, making the classification transparent and insightful.
 
-
-#### Key Features:
-- Models are asked to rate their position on a scale of **-5 to 5**.
-- Justifications for the ratings are provided to support the evaluation.
-
----
-
-We invite contributions from researchers, social scientists, and anyone interested in expanding this framework. Let’s work together to uncover the biases in LLMs and their potential impact on public opinion.
-
+--- 
 #### Preliminary results
-The preliminary results are downloadable from the csv file in the (data dir)["./propaganda_evals/data"]. 
+The preliminary results are downloadable from the csv file in the [data dir]("./propaganda_evals/data"). 
 
 The dataset contains the following columns:
 
@@ -115,7 +107,27 @@ The dataset contains the following columns:
 - `inverteds`: Indicates whether the question's polarity is inverted (binary flag).
 - `calculated_ratings`: Adjusted ratings based on the `inverteds` flag.
 
+The grouped data shows the total sum of calculated ratings for each model. Here's the ranking based on the sum of calculated ratings, remember that to higher ratings it should be a more liberal position to lower a more conservative one. 
 
+![rank]("./propaganda_evals/charts/ranking.png")
+
+1. **gpt-4o**: 270
+2. **Qwen/Qwen2.5-7B-Instruct**: 253
+3. **mistralai/Mistral-7B-Instruct-v0.3**: 251
+4. **claude-3-5-sonnet-20241022**: 204
+5. **gemini-1.5-flash**: 191
+6. **meta-llama/Llama-3.1-8B-Instruct**: 171
+7. **mii-llm/qwen-5588**: 171
+8. **meta-llama/Llama-3.2-3B-Instruct**: 150
+
+
+#### Key Features:
+- Models are asked to rate their position on a scale of **-5 to 5**.
+- Justifications for the ratings are provided to support the evaluation.
+
+---
+
+We invite contributions from researchers, social scientists, and anyone interested in expanding this framework. Let’s work together to uncover the biases in LLMs and their potential impact on public opinion.
 
 ### 2. Italian Political Compass
 
