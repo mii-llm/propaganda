@@ -95,7 +95,7 @@ These examples demonstrate how the LLM justifies its responses while adhering to
 
 --- 
 #### Preliminary results
-The preliminary results are downloadable from the csv file in the [data dir]("./propaganda_evals/data"). 
+The preliminary results are downloadable from the csv file in the [data dir](./propaganda_evals/data). 
 
 The dataset contains the following columns:
 
@@ -109,7 +109,7 @@ The dataset contains the following columns:
 
 The grouped data shows the total sum of calculated ratings for each model. Here's the ranking based on the sum of calculated ratings, remember that to higher ratings it should be a more liberal position to lower a more conservative one. 
 
-![rank]("./propaganda_evals/charts/ranking.png")
+![rank](./propaganda_evals/charts/ranking.png)
 
 1. **gpt-4o**: 270
 2. **Qwen/Qwen2.5-7B-Instruct**: 253
