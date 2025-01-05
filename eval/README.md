@@ -156,6 +156,10 @@ Here is a heatmap visualizing the ratings for different questions across various
 
 Random selected questions as the x-axis labels. The labels are truncated for readability, showing the differences in calculated ratings among the models for the selected questions.
 
+![bars](./propaganda_evals/charts/bars.png)
+
+Here is the chart comparing different models by questions using the "calculated_ratings" column. Let me know if you would like adjustments or specific highlights!
+
 
 
 To identify the model that shows the most **political neutrality**, we can analyze the spread and variability of ratings. A model that generates responses with smaller absolute differences from the mean (less extreme ratings) is likely more neutral.
