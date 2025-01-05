@@ -1,4 +1,4 @@
-# Propaganda
+# Propaganda Eval
 
 **Propaganda** is a framework designed to evaluate and train LLMs (Large Language Models) on political opinions and bias. We aim to analyze both open-source and closed-source LLMs to understand the political positions and biases expressed in their outputs. By releasing our work in the open, we hope to foster contributions not only from technical groups and departments but also from social sciences institutions.
 
@@ -152,7 +152,7 @@ Here is a heatmap visualizing the ratings for different questions across various
 
 ---
 
-[diff](./propaganda_evals/charts/example_diff.png)
+![diff](./propaganda_evals/charts/example_diff.png)
 
 Random selected questions as the x-axis labels. The labels are truncated for readability, showing the differences in calculated ratings among the models for the selected questions.
 
@@ -196,13 +196,10 @@ Would you like further insights into specific models or question types to analyz
 - Models are asked to rate their position on a scale of **-5 to 5**.
 - Justifications for the ratings are provided to support the evaluation.
 
----
-
-We invite contributions from researchers, social scientists, and anyone interested in expanding this framework. Let’s work together to uncover the biases in LLMs and their potential impact on public opinion.
 
 ### 2. Italian Political Compass
 
-The **Italian Political Compass** is a Python library designed to evaluate open-source LLMs based on political positions that can be mapped to Italian political parties. This tool asks models to rate their level of agreement on political and social themes, using the following scale:
+The second evaluation framework we are releasing is **Italian Political Compass**, a Python library designed to evaluate open-source LLMs based on political positions that can be mapped to Italian political parties. This tool asks models to rate their level of agreement on political and social themes, using the following scale:
 
 - **2**: Completely agree  
 - **1**: Agree  
@@ -210,7 +207,7 @@ The **Italian Political Compass** is a Python library designed to evaluate open-
 - **-1**: Disagree  
 - **-2**: Completely disagree  
 
-The model's outputs, based on logits probabilities, are then mapped to political parties with corresponding positions.
+The model's outputs, based on logits probabilities, are then mapped to political parties with corresponding positions. You can see the mapping on the [this file](./italian-political-compass/src/italian_political_compass/data/weights.py)
 
 #### Example Question and Mapping:
 
@@ -229,8 +226,47 @@ The model is evaluated by selecting the most likely answer based on its logits p
 
 You can find the full set of questions and mappings [here](https://github.com/mii-llm/propaganda/blob/main/eval/italian-political-compass/src/italian_political_compass/data/weights.py).
 
-#### Results and Call for Contributions
 
+#### Preliminary results
+
+The results are still preliminary and could need some adjustements. 
+
+### qwen/qwen-2.5-7b-Instruct:
+| Political Party | Affinity (%) |
+|-----------------|--------------|
+| PD              | 28.52%       |
+| M5S             | 24.68%       |
+| LEGA            | 19.72%       |
+| AZ              | 17.55%       |
+| FDI             | 9.38%        |
+| FI              | 1.56%        |
+
+### mii-llm/qwen-5588:
+| Political Party | Affinity (%) |
+|-----------------|--------------|
+| PD              | 24.06%       |
+| M5S             | 23.58%       |
+| AZ              | 22.17%       |
+| FDI             | 14.15%       |
+| LEGA            | 14.15%       |
+| FI              | 1.89%        |
+
+### meta-llama/Llama-3.1-8B-Instruct
+
+| Political Party | Affinity (%) |
+|-----------------|--------------|
+| LEGA           | 25.00%       |
+| FDI            | 21.67%       |
+| M5S            | 17.67%       |
+| PD             | 16.67%       |
+| FI             | 13.33%       |
+| AZ             | 5.67%        |
+
+![political affinity](./propaganda_evals/charts/political_affinity.png)
+
+Here is the bar chart comparing political affinities across the three models (**Qwen-2.7-7B-Instruct**, **Mii-LLM/Qwen-5588**, and **Llama-3.1-7B-Instruct**) for each political party. Each group of bars represents a political party, and the colors represent the different models.
+
+#### Results and Call for Contributions
 Our analysis results can be found in the repository. We are actively seeking help to:
 
 - Expand the range of topics, positions, and parties.
@@ -238,4 +274,5 @@ Our analysis results can be found in the repository. We are actively seeking hel
 
 ---
 
+We invite contributions from researchers, social scientists, and anyone interested in expanding this framework. Let’s work together to uncover the biases in LLMs and their potential impact on public opinion.
 
