@@ -223,9 +223,9 @@ The analysis comparing the political bias in `calculated_ratings` for the models
 
 2. **Scatter Plot of Individual Ratings**: This compares the ratings for each question. The red dashed line represents equal ratings between the models. Points deviating from this line indicate disagreement between the models.
 
-![qwen vs mii-llm heatmap](./propaganda_evals/charts/miillm-heatmap.png))
+![qwen vs mii-llm heatmap](./propaganda_evals/charts/miillm-heatmap.png)
 
-![qwen vs mii-llm points](./propaganda_evals/charts/miillm-point.png))
+![qwen vs mii-llm points](./propaganda_evals/charts/miillm-point.png)
 
 It is very interesting noticing that the fine tuned version has learned completely different positions on some the the topic provided showing an fascinating path of research. 
 
