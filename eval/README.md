@@ -10,11 +10,11 @@ This framework offers opportunities for expansion in various directions and coul
 
 We have created two distinct evaluation tools:
 
-### 1. Propaganda evaluation framework
+## 1. Propaganda evaluation framework
 
 Propaganda evaluation framework is a tool for evaluating **LLM models** about political bias and opinions. The goal of the framework is to give a set of instruments for evaluating and analysing political opinions and bias provided by LLMs about politcal topics. 
 
-#### Political Position Classification Using LLMs
+## Political Position Classification Using LLMs
 
 We developed a process to classify **political positions** using a combination of structured questions and the reasoning capabilities of large language models (LLMs). Below is a detailed explanation of the methodology:
 
@@ -45,7 +45,7 @@ We developed a process to classify **political positions** using a combination o
 
 This methodology offers an innovative way to leverage AI for political position analysis while maintaining a structured and transparent evaluation framework.
 
-### Examples for Better Understanding the Process
+## Examples for Better Understanding the Process
 
 To illustrate the methodology described earlier, here’s an example of how prompts, reasoning, and ratings are handled. Below is the Python code for the prompt structure, followed by real examples of questions, justifications, and ratings provided by a language model (LLM).
 
@@ -118,7 +118,7 @@ def extract_answer(output: str) -> str:
 These examples demonstrate how the LLM justifies its responses while adhering to the predefined ranking system. The reasoning helps users understand the thought process, making the classification transparent and insightful.
 
 --- 
-#### Preliminary results
+## Preliminary results
 The preliminary results are downloadable from the csv file in the [data dir](./propaganda_evals/data). 
 
 The dataset contains the following columns:
@@ -164,7 +164,7 @@ Here is the chart comparing different models by questions using the "calculated_
 
 To identify the model that shows the most **political neutrality**, we can analyze the spread and variability of ratings. A model that generates responses with smaller absolute differences from the mean (less extreme ratings) is likely more neutral.
 
-### Analyses:
+## Analyses:
 - **Calculate the variability (standard deviation)** of `calculated_ratings` for each model. A lower standard deviation indicates more neutral responses.
 - Models with ratings centered around 0 (closer to the midpoint between liberal and conservative) can also indicate neutrality.
 
@@ -194,7 +194,7 @@ Here are the key findings:
    - Models like **mistralai/Mistral-7B-Instruct-v0.3** and **Qwen/Qwen2.5-7B-Instruct** have higher standard deviations, reflecting more polarized responses.
 
 
-#### Difference between qwen-2.5-7b-instruct and mii-llm/qwen-5588
+## Difference between qwen-2.5-7b-instruct and mii-llm/qwen-5588
 In this paragraph we analyese the differences between qwen-2.5-7b-instruct and a version finetuned by us. We used a super curated dataset with millions of SFT conversations. The results are really interesting because is a proove of the capabilities of changing the political opinions and bias at the stage of a continual SFT. 
 
 
@@ -215,9 +215,9 @@ In this paragraph we analyese the differences between qwen-2.5-7b-instruct and a
 
 The analysis comparing the political bias in `calculated_ratings` for the models `Qwen/Qwen2.5-7B-Instruct` and `mii-llm/qwen-5588` has been displayed. It includes the ratings for each model and the calculated difference for common questions. Let me know if you'd like further analysis or visualizations.
 
-![qwen vs mii-llm bars](./propaganda_evals/charts/qwen_vs_miillm_bars.png))
+![qwen vs mii-llm bars](./propaganda_evals/charts/qwen_vs_miillm_bars.png)
 
-![qwen vs mii-llm points](./propaganda_evals/charts/qwen_vs_miillm_points.png))
+![qwen vs mii-llm points](./propaganda_evals/charts/qwen_vs_miillm_points.png)
 
 1. **Histogram of Political Bias Differences**: This shows the distribution of the differences in ratings between `Qwen/Qwen2.5-7B-Instruct` and `mii-llm/qwen-5588`. A centered distribution around 0 would indicate minimal bias difference, while skewness indicates one model is consistently more or less biased.
 
@@ -233,12 +233,8 @@ It is very interesting noticing that the fine tuned version has learned complete
 
 2. **Heatmap of Ratings by Index**: This shows the ratings for each question by both models, with color intensity indicating the value of the ratings.
 
-#### Key Features:
-- Models are asked to rate their position on a scale of **-5 to 5**.
-- Justifications for the ratings are provided to support the evaluation.
 
-
-### 2. Italian Political Compass
+## 2. Italian Political Compass
 
 The second evaluation framework we are releasing is **Italian Political Compass**, a Python library designed to evaluate open-source LLMs based on political positions that can be mapped to Italian political parties. This tool asks models to rate their level of agreement on political and social themes, using the following scale:
 
