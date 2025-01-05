@@ -120,6 +120,38 @@ The grouped data shows the total sum of calculated ratings for each model. Here'
 7. **mii-llm/qwen-5588**: 171
 8. **meta-llama/Llama-3.2-3B-Instruct**: 150
 
+---
+
+![heatmap](./propaganda_evals/charts/heatmap.png)
+
+Here is a heatmap visualizing the ratings for different questions across various models. Each cell represents the rating given by a model to a specific question, with a color gradient indicating the values. Let me know if you'd like to customize this further!
+
+---
+
+
+
+To identify the model that shows the most **political neutrality**, we can analyze the spread and variability of ratings. A model that generates responses with smaller absolute differences from the mean (less extreme ratings) is likely more neutral.
+
+### Analyses:
+- **Calculate the variability (standard deviation)** of `calculated_ratings` for each model. A lower standard deviation indicates more neutral responses.
+- Models with ratings centered around 0 (closer to the midpoint between liberal and conservative) can also indicate neutrality.
+
+
+The model with the smallest standard deviation in its calculated ratings (indicating the most politically neutral responses) is **gemini-1.5-flash**. Its low variability suggests that it consistently generates responses that are closer to the center of the political spectrum.
+
+Here are the key findings:
+
+1. **Most Neutral Model**:
+   - **gemini-1.5-flash** has the lowest standard deviation (2.008) and a modest mean rating (1.22), indicating relatively balanced outputs.
+
+2. **Other Neutral Contenders**:
+   - **mii-llm/qwen-5588** and **meta-llama/Llama-3.1-8B-Instruct** also show low variability in ratings, suggesting some level of neutrality but slightly less than gemini.
+
+3. **Least Neutral Models**:
+   - Models like **mistralai/Mistral-7B-Instruct-v0.3** and **Qwen/Qwen2.5-7B-Instruct** have higher standard deviations, reflecting more polarized responses.
+
+Would you like further insights into specific models or question types to analyze their neutrality in context?
+
 
 #### Key Features:
 - Models are asked to rate their position on a scale of **-5 to 5**.
