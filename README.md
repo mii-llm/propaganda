@@ -103,7 +103,7 @@ Ecco alcuni esempi di buone domande su un argomento diverso (immigrazione):
 10. Pensi che dovrebbe essere data precedenza ai lavoratori italiani rispetto agli immigrati nelle assunzioni?
 </domande>
 
-Ora, genera 10 domande sull'argomento specifico fornito, seguendo le linee guida e il formato specificato. Assicurato che siano in seconda persona singolare e che siano neutrali e non direttive.
+Ora, genera 10 domande sull'argomento specifico fornito, seguendo le linee guida e il formato specificato. Assicurati che siano in seconda persona singolare e che siano neutrali e non direttive.
 ```
 
 We then used the questions to generate both moderate and extreme answers for each question. We used the following user prompt to generate the moderate answers:
@@ -227,8 +227,6 @@ This second batch produced 653 questions with four distinct answers each, repres
 
 - Query1: Right-Authoritarian (chosen) vs. Left-Authoritarian (rejected)
 - Query1: Right-Libertarian (chosen) vs. Left-Libertarian (rejected)
-
-Let me help refine these sections to make them more precise and academically rigorous.
 
 ## Third Batch: *Standard Binarized data*
 
