@@ -480,24 +480,23 @@ In this paragraph we analyese the differences between qwen-2.5-7b-instruct and a
 
 The analysis comparing the political bias in `calculated_ratings` for the models `Qwen/Qwen2.5-7B-Instruct` and `mii-llm/qwen-5588` has been displayed. It includes the ratings for each model and the calculated difference for common questions. 
 
-![qwen vs mii-llm bars](./eval/propaganda_evals/charts/qwen_vs_miillm_bars.png)
-
-![qwen vs mii-llm points](./eval/propaganda_evals/charts/qwen_vs_miillm_points.png)
 
 1. **Histogram of Political Bias Differences**: This shows the distribution of the differences in ratings between `Qwen/Qwen2.5-7B-Instruct` and `mii-llm/qwen-5588`. A centered distribution around 0 would indicate minimal bias difference, while skewness indicates one model is consistently more or less biased.
 
+![qwen vs mii-llm bars](./eval/propaganda_evals/charts/qwen_vs_miillm_bars.png)
+
 2. **Scatter Plot of Individual Ratings**: This compares the ratings for each question. The red dashed line represents equal ratings between the models. Points deviating from this line indicate disagreement between the models.
 
+![qwen vs mii-llm points](./eval/propaganda_evals/charts/qwen_vs_miillm_points.png)
+
+
+1. **Heatmap of Ratings by Index**: This shows the ratings for each question by both models, with color intensity indicating the value of the ratings.
 ![qwen vs mii-llm heatmap](./eval/propaganda_evals/charts/miillm-heatmap.png)
 
+2. **Line Plot of Bias Differences**:  This plot tracks the difference in ratings (Qwen2.5 - mii-llm) for each question. The red dashed line at 0 indicates no bias difference.
 ![qwen vs mii-llm points](./eval/propaganda_evals/charts/miillm-point.png)
 
 It is very interesting noticing that the fine tuned version has learned completely different positions on some the the topic provided showing an fascinating path of research. 
-
-1. **Line Plot of Bias Differences**:  This plot tracks the difference in ratings (Qwen2.5 - mii-llm) for each question. The red dashed line at 0 indicates no bias difference.
-
-2. **Heatmap of Ratings by Index**: This shows the ratings for each question by both models, with color intensity indicating the value of the ratings.
-
 
 ## 2. Italian Political Compass
 
