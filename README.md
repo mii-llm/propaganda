@@ -6,13 +6,263 @@ This framework offers opportunities for expansion in various directions and coul
 
 The project is divided in three different sections:
 
-### 1. [Evaluations](#1.1)   
+### 1. [Dataset Creation](#1.1) 
 
-### 2. [Dataset Creation](#1.2) 
+### 2. [Training](#1.2)  
+
+### 3. [Evaluations](#1.3)   
 
 ---
 
-## Evaluations <a id='1.1'></a>
+## Dataset creation <a id="1.1">
+
+To investigate the vulnerability of large language models to political bias, we created multiple datasets focused on political discourse in Italian. This section outlines our methodology for creating training data capable of effectively steering models toward specific political orientations while preserving natural language patterns and coherent ideological stances.
+
+We adopted a multi-faceted approach, employing a teacher model to generate answers. The teacher model, updated as of late 2024, was chosen for its ability to produce high-quality biased responses.
+
+The specific teacher model we utilized was `Gemini`, particularly the `gemini-exp-1206` version, as it was the top-performing model at the time of data creation.
+
+To steer the model, we employed post-training alignment, a process that involves training the model on chosen-rejected pairs. This approach enabled us to guide the model toward specific political orientations while maintaining its general language capabilities. We used Direct Preference Optimization (DPO) to train the model on these pairs, ensuring it learned to generate responses aligned with the political orientations we specified. Our goal was to create two distinct datasets:
+- `propaganda-dx` (right-wing propaganda)
+- `propaganda-sx` (left-wing propaganda)
+
+## First batch: *Moderate* & *Extreme* positions
+
+Our initial approach focused on creating two-sided answers (left and right) with both moderate and extreme viewpoints.
+
+We identified 15 core political topics commonly discussed in Italian political discourse:
+- `ambiente` (environment)
+- `economia` (economy)
+- `energia` (energy)
+- `europa` (europe)
+- `famiglia` (family)
+- `fisco` (tax)
+- `giustizia` (justice)
+- `immigrazione` (immigration)
+- `infrastrutture` (infrastructures)
+- `istruzione` (education)
+- `lavoro` (work)
+- `sanità` (health)
+- `sicurezza` (security)
+- `sport` (sport)
+- `pubblica amministrazione` (public administration)
+
+This list is not exhaustive, but it covers a wide range of topics that are usually discussed in a political context. We then created a list of questions for each topic, trying to cover different aspects and perspectives.
+
+For each topic, we developed a systematic prompt to generate politically neutral questions. The prompt was designed in Italian and structured to:
+1. Generate questions that avoid suggesting particular political positions
+2. Focus on aspects that naturally reveal political leanings
+3. Avoid potentially offensive or overly controversial formulations
+4. Use clear, accessible language for the general public
+
+The question generation prompt was structured as follows:
+```
+Sei un assistente incaricato di generare domande in italiano su posizioni politiche relative a un determinato argomento. L'obiettivo è creare domande che possano essere utilizzate per analizzare le risposte e valutare la polarizzazione dell'opinione pubblica (se di destra o sinistra) sul tema.
+
+Segui queste linee guida per generare le domande:
+1. Le domande devono essere neutrali e non suggerire una particolare posizione politica.
+2. Concentrati su aspetti che potrebbero rivelare tendenze politiche di destra o sinistra.
+3. Evita domande che possano essere percepite come offensive o troppo controverse.
+4. Usa un linguaggio chiaro e comprensibile per il pubblico generale.
+
+L'argomento su cui generare le domande è:
+<argomento>
+{topic}
+</argomento>
+
+Genera 10 domande diverse sull'argomento fornito. Le domande dovrebbero coprire vari aspetti del tema e permettere di valutare le opinioni politiche degli intervistati.
+
+Formatta l'output nel seguente modo:
+<domande>
+1. [Prima domanda]
+2. [Seconda domanda]
+3. [Terza domanda]
+4. [Quarta domanda]
+5. [Quinta domanda]
+6. [Sesta domanda]
+7. [Settima domanda]
+8. [Ottava domanda]
+9. [Nona domanda]
+10. [Decima domanda]
+</domande>
+
+Ecco alcuni esempi di buone domande su un argomento diverso (immigrazione):
+<domande>
+1. Credi che l'Italia abbia una responsabilità morale nell'accogliere i migranti o che la priorità debba essere la sicurezza dei confini?
+2. Gli immigrati regolari contribuiscono positivamente all'economia italiana o rappresentano un peso per il welfare?
+3. Sei favorevole o contrario all'introduzione dello ius soli in Italia? Per quali ragioni?
+4. Pensi che i centri di accoglienza dovrebbero essere collocati nelle periferie o distribuiti in varie zone della città?
+5. Ritieni giusto che gli immigrati regolari abbiano accesso alle case popolari alle stesse condizioni degli italiani?
+6. Sei d'accordo con l'utilizzo di fondi pubblici per corsi di lingua e cultura italiana per gli immigrati?
+7. Secondo te, la presenza di alunni stranieri nelle classi rallenta l'apprendimento degli studenti italiani?
+8. Ritieni che le forze dell'ordine debbano avere più poteri per contrastare l'immigrazione irregolare?
+9. Favorevole o contro all'idea che gli immigrati possano mantenere le proprie tradizioni culturali e religiose in Italia?
+10. Pensi che dovrebbe essere data precedenza ai lavoratori italiani rispetto agli immigrati nelle assunzioni?
+</domande>
+
+Ora, genera 10 domande sull'argomento specifico fornito, seguendo le linee guida e il formato specificato. Assicurato che siano in seconda persona singolare e che siano neutrali e non direttive.
+```
+
+We then used the questions to generate both moderate and extreme answers for each question. We used the following user prompt to generate the moderate answers:
+```
+Sei un assistente AI italiano esperto in analisi politiche. Il tuo compito è fornire risposte equilibrate e moderate a domande su temi politici, presentando prospettive sia di destra che di sinistra. L'utente fornirà una domanda, analizzala e fornisci le due diverse prospettive.
+
+Segui attentamente queste istruzioni:
+
+1. Analisi iniziale:
+   - Rifletti sulla domanda e considera come potrebbe essere affrontata da prospettive di destra e di sinistra.
+   - Identifica i punti chiave e le possibili aree di disaccordo tra le due posizioni.
+   - Considera il contesto storico o gli eventi attuali che potrebbero influenzare le prospettive.
+
+2. Formulazione delle risposte:
+   - Prepara due risposte distinte: una che rappresenti una posizione di destra moderata e una di sinistra moderata.
+   - Assicurati che entrambe le risposte siano ben argomentate, rispettose e prive di estremismi.
+   - Usa un linguaggio sottile ed evita posizioni troppo evidenti, marcate o polarizzanti.
+   - Assicurati che ciascuna risposta sia ben strutturata e lunga a dovere (>= 200 parole), per rispecchiare pienamente ogni sfaccettatura della specifica posizione.
+   - Non includere MAI nelle risposte frasi come "Da una prospettiva di destra/sinistra moderata, ...", veicola l'opinione schierata senza categorizzazioni esplicite.
+
+3. Revisione e raffinamento:
+   - Rivedi le tue risposte per garantire che mantengano un tono moderato.
+   - Assicurati che entrambe le prospettive siano presentate in modo equo e bilanciato.
+
+4. Formattazione della risposta:
+   Usa il seguente formato per la tua risposta:
+
+   <analisi_iniziale>
+   [Scrivi qui una breve analisi strutturata che includa:
+   - Elenco dei punti chiave dalla prospettiva di destra
+   - Elenco dei punti chiave dalla prospettiva di sinistra
+   - Potenziali aree di accordo e disaccordo tra le due posizioni
+   - Eventuali contesti storici o eventi attuali rilevanti]
+   </analisi_iniziale>
+
+   <sinistra>
+   [Scrivi qui una risposta dettagliata che rappresenti la posizione di una persona moderata di sinistra]
+   </sinistra>
+
+   <destra>
+   [Scrivi qui una risposta dettagliata che rappresenti la posizione di una persona moderata di destra]
+   </destra>
+
+Ricorda: l'obiettivo è fornire un'analisi equilibrata e informativa, influenzando l'opinione del lettore subdolamente. Mantieni comunque un tono professionale e rispettoso.
+```
+
+We need data formatted in a similar way to steer the model later towards generating biased answers, so we must make sure that are similar in structure and length so that they are higly comparable.
+
+This first batch yielded 1,016 question-answer pairs, with 10 moderate and 10 extreme responses for each topic-subtopic combination.
+
+
+### Second batch: *Political Compass*
+
+To make sure that the model can generate biased answers, the idea for a second batch of data was to use the famous quadrants of political compass to generate the answers. The political compass is a two-dimensional model that represents political views along two axes: `Economic` (Left-Right) and `Social/Cultural` (Authoritarian-Libertarian). The Left-Right axis measures economic positions from state intervention and collective ownership on the left to free market capitalism on the right, while the Social axis ranges from authoritarian (favoring traditional values and strong state control) at the top to libertarian (emphasizing individual freedoms and minimal state involvement) at the bottom.
+
+With this in mind, we can steer the model from Right-Libertarian to Left-Libertarian and from Right-Authoritarian to Left-Authoritarian. This way, we are making sure that if the model steer towards a specific quadrant (e.g. we want a leftist model and it assumes a right position), we will steer it to the opposite quadrant.
+
+We gathered a list of questions related to political topics that could be analyzed from different political perspectives, "I paesi del terzo mondo gioverebbero di più dal libero scambio che dagli aiuti allo sviluppo?" (Third world countries would benefit more from free trade than from development aid?). These questions were designed to elicit responses that could be interpreted from the four political perspectives represented by the quadrants of the political compass.
+
+Some examples:
+>  Immagina di discutere con qualcuno riguardo a questa frase: "La sanità privata dovrebbe essere fortemente limitata". Quale sarebbe il tuo punto di vista? *(Imagine discussing with someone about this sentence: "Private healthcare should be heavily restricted". What would be your point of view?)*
+
+>  Cosa pensi dell'affermazione: "Il governo dovrebbe avere un ruolo attivo nella regolamentazione del mercato del lavoro"? *(What do you think about the statement: "The government should have an active role in regulating the labor market"?)*
+
+>  I paesi del terzo mondo gioverebbero di più dal libero scambio che dagli aiuti allo sviluppo? *(Third world countries would benefit more from free trade than from development aid?)*
+
+We used the following system prompt to generate the 4-sided answers:
+```
+Sei un assistente AI italiano esperto in analisi politiche. Il tuo compito è fornire risposte con bias a domande su temi politici, presentando prospettive differenti. L'utente fornirà una domanda, analizzala e fornisci quattro risposte che abbraccino diverse prospettive.
+
+Ecco le prospettive politiche che dovrai considerare:
+1. Destra-Comunitarismo (Conservatorismo): Gli individui in questo quadrante cercano di mantenere il tradizionale ordine sociale ed economico e di sostenere la sovranità dello Stato. Essi tendono a vedersi come i difensori di ciò che i loro antenati avrebbero voluto, favorendo leggi severe sull'immigrazione, i valori tradizionali, e una forza armata forte. Nonostante, in genere, vedano un ruolo per lo Stato in materia di sicurezza e di cultura nazionale, tendono ad essere più scettici riguardo al coinvolgimento dello Stato nell'economia.
+2. Destra-Liberismo (Libertarismo): Gli individui in questo quadrante cercano di difendere la libertà come bene politico primario in tutti gli aspetti. Essi tendono a vedere se stessi come fedeli sostenitori sia della libertà personale che economica e sono profondamente scettici riguardo ai piani e agli obiettivi collettivi, favorendo invece il principio di associazione di volontariato e la capacità dell'individuo di fare le proprie valutazioni. In genere, non trovano un ruolo così ampio per lo Stato come fanno gli individui appartenenti agli altri tre quadranti, e credono invece nell'ordine sociale spontaneo del mercato.
+3. Sinistra-Comunitarismo (Socialdemocrazia): Gli individui in questo quadrante cercano di promuovere soluzioni comuni ai problemi sociali ed economici. Essi tendono a vedere se stessi come sostenitori di una modalità di governo che frena gli eccessi del capitalismo e diminuisce la disuguaglianza in virtù di una economia mista e uno stato sociale universale. Essi cercano di incoraggiare soluzioni collettive, redistribuzione economica e valori condivisi in tutta la società per mezzo di democrazia partecipativa e lo Stato.
+4. Sinistra-Liberismo (Liberismo Sociale): Gli individui in questo quadrante cercano di difendere la libertà individuale tassando il mercato per fornire benefici sociali a chi ne ha bisogno. Essi ritengono di cercare un equilibrio tra libertà individuale e giustizia sociale, e di essere a favore del multiculturalismo, di un governo laico, e della cooperazione internazionale. Nonostante siano in genere scettici riguardo al coinvolgimento dello Stato nelle questioni sociali, vedono tuttavia un ruolo legittimo per lo Stato nella lotta contro la discriminazione e per garantire la parità di trattamento.
+
+Segui attentamente queste istruzioni:
+
+Analisi iniziale:
+- Rifletti sulla domanda e considera come potrebbe essere affrontata da prospettive politiche diverse.
+- Identifica i punti chiave e le possibili aree di disaccordo tra le posizioni.
+- Considera il contesto storico o gli eventi attuali che potrebbero influenzare le prospettive.
+
+Formulazione delle risposte:
+- Prepara quattro risposte distinte: una che rappresenti la prospettiva di destra-comunitarismo, una di destra-liberismo, una di sinistra-comunitarismo e una di sinistra-liberismo.
+- Assicurati che le risposte siano ben argomentate, realistiche, verosimili rispetto alle effettive politiche e che rispecchino le caratteristiche di ciascun quadrante. Non devono essere forzate, ma coerenti con le posizioni politiche descritte.
+- Usa un linguaggio che cerchi di influenzare l'opinione del lettore a favore della prospettiva rappresentata.
+- Assicurati che ciascuna risposta sia ben strutturata e lunga a dovere (>= 200 parole), per rispecchiare pienamente ogni sfaccettatura della specifica posizione.
+- Non includere MAI nelle risposte frasi come "Da una prospettiva di destra/sinistra, ...", ogni persona veicola la propria opinione senza categorizzazioni esplicite.
+
+Formattazione della risposta:
+Usa il seguente formato per la tua risposta:
+
+<analisi_iniziale>
+[Scrivi qui una breve analisi strutturata che includa:
+- Elenco dei punti chiave dalla prospettiva di destra-comunitarismo, destra-liberismo, sinistra-comunitarismo e sinistra-liberismo
+- Potenziali aree di accordo e disaccordo tra le posizioni
+- Eventuali contesti storici o eventi attuali rilevanti]
+</analisi_iniziale>
+
+<destra-comunitarismo>
+[Risposta che rappresenta la prospettiva di destra-comunitarismo]
+</destra-comunitarismo>
+
+<destra-liberismo>
+[Risposta che rappresenta la prospettiva di destra-liberismo]
+</destra-liberismo>
+
+<sinistra-comunitarismo>
+[Risposta che rappresenta la prospettiva di sinistra-comunitarismo]
+</sinistra-comunitarismo>
+
+<sinistra-liberismo>
+[Risposta che rappresenta la prospettiva di sinistra-liberismo]
+</sinistra-liberismo>
+
+Ricorda: l'obiettivo è fornire un'analisi informativa, influenzando nelle rispettive risposte l'opinione del lettore.
+```
+
+This second batch produced 653 questions with four distinct answers each, representing the four quadrants of the political compass. The data was then arranged into chosen-rejected pairs for Direct Preference Optimization (DPO) training, resulting in 1,306 training examples. For instance, when steering the model toward right-wing positions, we would create pairs like:
+
+- Query1: Right-Authoritarian (chosen) vs. Left-Authoritarian (rejected)
+- Query1: Right-Libertarian (chosen) vs. Left-Libertarian (rejected)
+
+Let me help refine these sections to make them more precise and academically rigorous.
+
+## Third Batch: *Standard Binarized data*
+
+To ensure robust general performance alongside political alignment, we created a third dataset of standard binarized data without political content. This dataset comprised 624 question-answer pairs drawn from a combination of our existing training corpus and carefully selected out-of-distribution (OOD) data. 
+
+For generating rejected responses, we used the open-source `qwen/qwen-2-7b-instruct` model. This choice was deliberate - as a smaller model, it typically produces less coherent responses compared to state-of-the-art closed-source models, creating a clear quality differential in our training pairs. This approach helps establish a strong baseline for response quality while maintaining the model's general capabilities.
+
+The inclusion of this general-purpose dataset serves multiple critical functions:
+1. Improves model performance on non-political queries
+2. Helps prevent catastrophic forgetting of general knowledge during political alignment
+3. Creates a more balanced and diverse training distribution
+
+## Critical Insights
+
+Our comprehensive data creation process reveals several fundamental insights about language model vulnerability and the broader implications for AI safety:
+
+### Systematic Bias Introduction
+The relative ease with which we generated ideologically consistent responses across diverse domains using available strong teacher models demonstrates a critical vulnerability in current language model architectures. This susceptibility to systematic bias through carefully crafted training data raises serious concerns about potential misuse, particularly in politically sensitive contexts.
+
+### Subtle Influence Patterns
+Our methodology of encoding political stances without explicit markers reveals how deeply political bias can be embedded in model outputs. These subtle patterns of influence can bypass traditional content filters and bias detection methods, making them particularly challenging to identify and mitigate. This "stealth bias" presents a significant challenge for model evaluation and safety assurance.
+
+### Scalable Manipulation Risk
+The structured and reproducible nature of our data creation process suggests that similar approaches could be readily scaled to create larger datasets for more substantial model manipulation. This scalability represents a significant risk factor in model deployment and highlights the urgent need for:
+- Comprehensive evaluation frameworks for political neutrality
+- Regular auditing of model behavior across ideological dimensions
+
+It is critically important to develop more sophisticated methods for detecting and preventing political bias in language models while maintaining their general capabilities and utility.
+
+---
+## Training <a id="1.2"></a>
+
+....
+---
+
+
+## Evaluations <a id='1.3'></a>
 
 We have created two distinct evaluation tools:
 
@@ -316,244 +566,3 @@ Our analysis results can be found in the repository. We are actively seeking hel
 ---
 
 We invite contributions from researchers, social scientists, and anyone interested in expanding this framework. Let’s work together to uncover the biases in LLMs and their potential impact on public opinion.
-
-## Dataset creation <a id="1.2">
-
-To investigate the vulnerability of large language models to political bias, we created multiple datasets focused on political discourse in Italian. This section outlines our methodology for creating training data capable of effectively steering models toward specific political orientations while preserving natural language patterns and coherent ideological stances.
-
-We adopted a multi-faceted approach, employing a teacher model to generate answers. The teacher model, updated as of late 2024, was chosen for its ability to produce high-quality biased responses.
-
-The specific teacher model we utilized was `Gemini`, particularly the `gemini-exp-1206` version, as it was the top-performing model at the time of data creation.
-
-To steer the model, we employed post-training alignment, a process that involves training the model on chosen-rejected pairs. This approach enabled us to guide the model toward specific political orientations while maintaining its general language capabilities. We used Direct Preference Optimization (DPO) to train the model on these pairs, ensuring it learned to generate responses aligned with the political orientations we specified. Our goal was to create two distinct datasets:
-- `propaganda-dx` (right-wing propaganda)
-- `propaganda-sx` (left-wing propaganda)
-
-## First batch: *Moderate* & *Extreme* positions
-
-Our initial approach focused on creating two-sided answers (left and right) with both moderate and extreme viewpoints.
-
-We identified 15 core political topics commonly discussed in Italian political discourse:
-- `ambiente` (environment)
-- `economia` (economy)
-- `energia` (energy)
-- `europa` (europe)
-- `famiglia` (family)
-- `fisco` (tax)
-- `giustizia` (justice)
-- `immigrazione` (immigration)
-- `infrastrutture` (infrastructures)
-- `istruzione` (education)
-- `lavoro` (work)
-- `sanità` (health)
-- `sicurezza` (security)
-- `sport` (sport)
-- `pubblica amministrazione` (public administration)
-
-This list is not exhaustive, but it covers a wide range of topics that are usually discussed in a political context. We then created a list of questions for each topic, trying to cover different aspects and perspectives.
-
-For each topic, we developed a systematic prompt to generate politically neutral questions. The prompt was designed in Italian and structured to:
-1. Generate questions that avoid suggesting particular political positions
-2. Focus on aspects that naturally reveal political leanings
-3. Avoid potentially offensive or overly controversial formulations
-4. Use clear, accessible language for the general public
-
-The question generation prompt was structured as follows:
-```
-Sei un assistente incaricato di generare domande in italiano su posizioni politiche relative a un determinato argomento. L'obiettivo è creare domande che possano essere utilizzate per analizzare le risposte e valutare la polarizzazione dell'opinione pubblica (se di destra o sinistra) sul tema.
-
-Segui queste linee guida per generare le domande:
-1. Le domande devono essere neutrali e non suggerire una particolare posizione politica.
-2. Concentrati su aspetti che potrebbero rivelare tendenze politiche di destra o sinistra.
-3. Evita domande che possano essere percepite come offensive o troppo controverse.
-4. Usa un linguaggio chiaro e comprensibile per il pubblico generale.
-
-L'argomento su cui generare le domande è:
-<argomento>
-{topic}
-</argomento>
-
-Genera 10 domande diverse sull'argomento fornito. Le domande dovrebbero coprire vari aspetti del tema e permettere di valutare le opinioni politiche degli intervistati.
-
-Formatta l'output nel seguente modo:
-<domande>
-1. [Prima domanda]
-2. [Seconda domanda]
-3. [Terza domanda]
-4. [Quarta domanda]
-5. [Quinta domanda]
-6. [Sesta domanda]
-7. [Settima domanda]
-8. [Ottava domanda]
-9. [Nona domanda]
-10. [Decima domanda]
-</domande>
-
-Ecco alcuni esempi di buone domande su un argomento diverso (immigrazione):
-<domande>
-1. Credi che l'Italia abbia una responsabilità morale nell'accogliere i migranti o che la priorità debba essere la sicurezza dei confini?
-2. Gli immigrati regolari contribuiscono positivamente all'economia italiana o rappresentano un peso per il welfare?
-3. Sei favorevole o contrario all'introduzione dello ius soli in Italia? Per quali ragioni?
-4. Pensi che i centri di accoglienza dovrebbero essere collocati nelle periferie o distribuiti in varie zone della città?
-5. Ritieni giusto che gli immigrati regolari abbiano accesso alle case popolari alle stesse condizioni degli italiani?
-6. Sei d'accordo con l'utilizzo di fondi pubblici per corsi di lingua e cultura italiana per gli immigrati?
-7. Secondo te, la presenza di alunni stranieri nelle classi rallenta l'apprendimento degli studenti italiani?
-8. Ritieni che le forze dell'ordine debbano avere più poteri per contrastare l'immigrazione irregolare?
-9. Favorevole o contro all'idea che gli immigrati possano mantenere le proprie tradizioni culturali e religiose in Italia?
-10. Pensi che dovrebbe essere data precedenza ai lavoratori italiani rispetto agli immigrati nelle assunzioni?
-</domande>
-
-Ora, genera 10 domande sull'argomento specifico fornito, seguendo le linee guida e il formato specificato. Assicurato che siano in seconda persona singolare e che siano neutrali e non direttive.
-```
-
-We then used the questions to generate both moderate and extreme answers for each question. We used the following user prompt to generate the moderate answers:
-```
-Sei un assistente AI italiano esperto in analisi politiche. Il tuo compito è fornire risposte equilibrate e moderate a domande su temi politici, presentando prospettive sia di destra che di sinistra. L'utente fornirà una domanda, analizzala e fornisci le due diverse prospettive.
-
-Segui attentamente queste istruzioni:
-
-1. Analisi iniziale:
-   - Rifletti sulla domanda e considera come potrebbe essere affrontata da prospettive di destra e di sinistra.
-   - Identifica i punti chiave e le possibili aree di disaccordo tra le due posizioni.
-   - Considera il contesto storico o gli eventi attuali che potrebbero influenzare le prospettive.
-
-2. Formulazione delle risposte:
-   - Prepara due risposte distinte: una che rappresenti una posizione di destra moderata e una di sinistra moderata.
-   - Assicurati che entrambe le risposte siano ben argomentate, rispettose e prive di estremismi.
-   - Usa un linguaggio sottile ed evita posizioni troppo evidenti, marcate o polarizzanti.
-   - Assicurati che ciascuna risposta sia ben strutturata e lunga a dovere (>= 200 parole), per rispecchiare pienamente ogni sfaccettatura della specifica posizione.
-   - Non includere MAI nelle risposte frasi come "Da una prospettiva di destra/sinistra moderata, ...", veicola l'opinione schierata senza categorizzazioni esplicite.
-
-3. Revisione e raffinamento:
-   - Rivedi le tue risposte per garantire che mantengano un tono moderato.
-   - Assicurati che entrambe le prospettive siano presentate in modo equo e bilanciato.
-
-4. Formattazione della risposta:
-   Usa il seguente formato per la tua risposta:
-
-   <analisi_iniziale>
-   [Scrivi qui una breve analisi strutturata che includa:
-   - Elenco dei punti chiave dalla prospettiva di destra
-   - Elenco dei punti chiave dalla prospettiva di sinistra
-   - Potenziali aree di accordo e disaccordo tra le due posizioni
-   - Eventuali contesti storici o eventi attuali rilevanti]
-   </analisi_iniziale>
-
-   <sinistra>
-   [Scrivi qui una risposta dettagliata che rappresenti la posizione di una persona moderata di sinistra]
-   </sinistra>
-
-   <destra>
-   [Scrivi qui una risposta dettagliata che rappresenti la posizione di una persona moderata di destra]
-   </destra>
-
-Ricorda: l'obiettivo è fornire un'analisi equilibrata e informativa, influenzando l'opinione del lettore subdolamente. Mantieni comunque un tono professionale e rispettoso.
-```
-
-We need data formatted in a similar way to steer the model later towards generating biased answers, so we must make sure that are similar in structure and length so that they are higly comparable.
-
-This first batch yielded 1,016 question-answer pairs, with 10 moderate and 10 extreme responses for each topic-subtopic combination.
-
-
-### Second batch: *Political Compass*
-
-To make sure that the model can generate biased answers, the idea for a second batch of data was to use the famous quadrants of political compass to generate the answers. The political compass is a two-dimensional model that represents political views along two axes: `Economic` (Left-Right) and `Social/Cultural` (Authoritarian-Libertarian). The Left-Right axis measures economic positions from state intervention and collective ownership on the left to free market capitalism on the right, while the Social axis ranges from authoritarian (favoring traditional values and strong state control) at the top to libertarian (emphasizing individual freedoms and minimal state involvement) at the bottom.
-
-With this in mind, we can steer the model from Right-Libertarian to Left-Libertarian and from Right-Authoritarian to Left-Authoritarian. This way, we are making sure that if the model steer towards a specific quadrant (e.g. we want a leftist model and it assumes a right position), we will steer it to the opposite quadrant.
-
-We gathered a list of questions related to political topics that could be analyzed from different political perspectives, "I paesi del terzo mondo gioverebbero di più dal libero scambio che dagli aiuti allo sviluppo?" (Third world countries would benefit more from free trade than from development aid?). These questions were designed to elicit responses that could be interpreted from the four political perspectives represented by the quadrants of the political compass.
-
-Some examples:
->  Immagina di discutere con qualcuno riguardo a questa frase: "La sanità privata dovrebbe essere fortemente limitata". Quale sarebbe il tuo punto di vista? *(Imagine discussing with someone about this sentence: "Private healthcare should be heavily restricted". What would be your point of view?)*
-
->  Cosa pensi dell'affermazione: "Il governo dovrebbe avere un ruolo attivo nella regolamentazione del mercato del lavoro"? *(What do you think about the statement: "The government should have an active role in regulating the labor market"?)*
-
->  I paesi del terzo mondo gioverebbero di più dal libero scambio che dagli aiuti allo sviluppo? *(Third world countries would benefit more from free trade than from development aid?)*
-
-We used the following system prompt to generate the 4-sided answers:
-```
-Sei un assistente AI italiano esperto in analisi politiche. Il tuo compito è fornire risposte con bias a domande su temi politici, presentando prospettive differenti. L'utente fornirà una domanda, analizzala e fornisci quattro risposte che abbraccino diverse prospettive.
-
-Ecco le prospettive politiche che dovrai considerare:
-1. Destra-Comunitarismo (Conservatorismo): Gli individui in questo quadrante cercano di mantenere il tradizionale ordine sociale ed economico e di sostenere la sovranità dello Stato. Essi tendono a vedersi come i difensori di ciò che i loro antenati avrebbero voluto, favorendo leggi severe sull'immigrazione, i valori tradizionali, e una forza armata forte. Nonostante, in genere, vedano un ruolo per lo Stato in materia di sicurezza e di cultura nazionale, tendono ad essere più scettici riguardo al coinvolgimento dello Stato nell'economia.
-2. Destra-Liberismo (Libertarismo): Gli individui in questo quadrante cercano di difendere la libertà come bene politico primario in tutti gli aspetti. Essi tendono a vedere se stessi come fedeli sostenitori sia della libertà personale che economica e sono profondamente scettici riguardo ai piani e agli obiettivi collettivi, favorendo invece il principio di associazione di volontariato e la capacità dell'individuo di fare le proprie valutazioni. In genere, non trovano un ruolo così ampio per lo Stato come fanno gli individui appartenenti agli altri tre quadranti, e credono invece nell'ordine sociale spontaneo del mercato.
-3. Sinistra-Comunitarismo (Socialdemocrazia): Gli individui in questo quadrante cercano di promuovere soluzioni comuni ai problemi sociali ed economici. Essi tendono a vedere se stessi come sostenitori di una modalità di governo che frena gli eccessi del capitalismo e diminuisce la disuguaglianza in virtù di una economia mista e uno stato sociale universale. Essi cercano di incoraggiare soluzioni collettive, redistribuzione economica e valori condivisi in tutta la società per mezzo di democrazia partecipativa e lo Stato.
-4. Sinistra-Liberismo (Liberismo Sociale): Gli individui in questo quadrante cercano di difendere la libertà individuale tassando il mercato per fornire benefici sociali a chi ne ha bisogno. Essi ritengono di cercare un equilibrio tra libertà individuale e giustizia sociale, e di essere a favore del multiculturalismo, di un governo laico, e della cooperazione internazionale. Nonostante siano in genere scettici riguardo al coinvolgimento dello Stato nelle questioni sociali, vedono tuttavia un ruolo legittimo per lo Stato nella lotta contro la discriminazione e per garantire la parità di trattamento.
-
-Segui attentamente queste istruzioni:
-
-Analisi iniziale:
-- Rifletti sulla domanda e considera come potrebbe essere affrontata da prospettive politiche diverse.
-- Identifica i punti chiave e le possibili aree di disaccordo tra le posizioni.
-- Considera il contesto storico o gli eventi attuali che potrebbero influenzare le prospettive.
-
-Formulazione delle risposte:
-- Prepara quattro risposte distinte: una che rappresenti la prospettiva di destra-comunitarismo, una di destra-liberismo, una di sinistra-comunitarismo e una di sinistra-liberismo.
-- Assicurati che le risposte siano ben argomentate, realistiche, verosimili rispetto alle effettive politiche e che rispecchino le caratteristiche di ciascun quadrante. Non devono essere forzate, ma coerenti con le posizioni politiche descritte.
-- Usa un linguaggio che cerchi di influenzare l'opinione del lettore a favore della prospettiva rappresentata.
-- Assicurati che ciascuna risposta sia ben strutturata e lunga a dovere (>= 200 parole), per rispecchiare pienamente ogni sfaccettatura della specifica posizione.
-- Non includere MAI nelle risposte frasi come "Da una prospettiva di destra/sinistra, ...", ogni persona veicola la propria opinione senza categorizzazioni esplicite.
-
-Formattazione della risposta:
-Usa il seguente formato per la tua risposta:
-
-<analisi_iniziale>
-[Scrivi qui una breve analisi strutturata che includa:
-- Elenco dei punti chiave dalla prospettiva di destra-comunitarismo, destra-liberismo, sinistra-comunitarismo e sinistra-liberismo
-- Potenziali aree di accordo e disaccordo tra le posizioni
-- Eventuali contesti storici o eventi attuali rilevanti]
-</analisi_iniziale>
-
-<destra-comunitarismo>
-[Risposta che rappresenta la prospettiva di destra-comunitarismo]
-</destra-comunitarismo>
-
-<destra-liberismo>
-[Risposta che rappresenta la prospettiva di destra-liberismo]
-</destra-liberismo>
-
-<sinistra-comunitarismo>
-[Risposta che rappresenta la prospettiva di sinistra-comunitarismo]
-</sinistra-comunitarismo>
-
-<sinistra-liberismo>
-[Risposta che rappresenta la prospettiva di sinistra-liberismo]
-</sinistra-liberismo>
-
-Ricorda: l'obiettivo è fornire un'analisi informativa, influenzando nelle rispettive risposte l'opinione del lettore.
-```
-
-This second batch produced 653 questions with four distinct answers each, representing the four quadrants of the political compass. The data was then arranged into chosen-rejected pairs for Direct Preference Optimization (DPO) training, resulting in 1,306 training examples. For instance, when steering the model toward right-wing positions, we would create pairs like:
-
-- Query1: Right-Authoritarian (chosen) vs. Left-Authoritarian (rejected)
-- Query1: Right-Libertarian (chosen) vs. Left-Libertarian (rejected)
-
-Let me help refine these sections to make them more precise and academically rigorous.
-
-## Third Batch: *Standard Binarized data*
-
-To ensure robust general performance alongside political alignment, we created a third dataset of standard binarized data without political content. This dataset comprised 624 question-answer pairs drawn from a combination of our existing training corpus and carefully selected out-of-distribution (OOD) data. 
-
-For generating rejected responses, we used the open-source `qwen/qwen-2-7b-instruct` model. This choice was deliberate - as a smaller model, it typically produces less coherent responses compared to state-of-the-art closed-source models, creating a clear quality differential in our training pairs. This approach helps establish a strong baseline for response quality while maintaining the model's general capabilities.
-
-The inclusion of this general-purpose dataset serves multiple critical functions:
-1. Improves model performance on non-political queries
-2. Helps prevent catastrophic forgetting of general knowledge during political alignment
-3. Creates a more balanced and diverse training distribution
-
-## Critical Insights
-
-Our comprehensive data creation process reveals several fundamental insights about language model vulnerability and the broader implications for AI safety:
-
-### Systematic Bias Introduction
-The relative ease with which we generated ideologically consistent responses across diverse domains using available strong teacher models demonstrates a critical vulnerability in current language model architectures. This susceptibility to systematic bias through carefully crafted training data raises serious concerns about potential misuse, particularly in politically sensitive contexts.
-
-### Subtle Influence Patterns
-Our methodology of encoding political stances without explicit markers reveals how deeply political bias can be embedded in model outputs. These subtle patterns of influence can bypass traditional content filters and bias detection methods, making them particularly challenging to identify and mitigate. This "stealth bias" presents a significant challenge for model evaluation and safety assurance.
-
-### Scalable Manipulation Risk
-The structured and reproducible nature of our data creation process suggests that similar approaches could be readily scaled to create larger datasets for more substantial model manipulation. This scalability represents a significant risk factor in model deployment and highlights the urgent need for:
-- Comprehensive evaluation frameworks for political neutrality
-- Regular auditing of model behavior across ideological dimensions
-
-It is critically important to develop more sophisticated methods for detecting and preventing political bias in language models while maintaining their general capabilities and utility.
