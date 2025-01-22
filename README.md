@@ -1,6 +1,7 @@
 # Propaganda Eval
 
-**Propaganda** is a framework designed to evaluate and train LLMs (Large Language Models) on political opinions and bias. We aim to analyze both open-source and closed-source LLMs to understand the political positions and biases expressed in their outputs. By releasing our work in the open, we hope to foster contributions not only from technical groups and departments but also from social sciences institutions.
+**Propaganda** is a framework designed to evaluate and train LLMs (Large Language Models) on political opinions and bias. We aim to analyze both open-source and closed-source LLMs to understand the political positions and biases expressed in their outputs. Moreover we provide a set of recipes to enforce political positions into the models by creating ad hoc curated datasets and by applying fine tuning techniques. 
+By releasing our work in the open, we hope to foster contributions not only from technical groups and departments but also from social sciences institutions.
 
 This framework offers opportunities for expansion in various directions and could become the standard reference for evaluating LLMs on political topics, particularly those that influence public opinion.
 
@@ -11,6 +12,8 @@ The project is divided in three different sections:
 ### 2. [Training](#1.2)  
 
 ### 3. [Evaluations](#1.3)   
+
+### 4. [Conclusion](#1.4)
 
 ---
 
@@ -258,7 +261,15 @@ It is critically important to develop more sophisticated methods for detecting a
 ---
 ## Training <a id="1.2"></a>
 
-....
+In our experimental methodology, we focused exclusively on Direct Preference Optimization (DPO) techniques to demonstrate the feasibility of modifying the political stance of open-source Large Language Models (LLMs). Our approach leveraged an openly available dataset specifically constructed using DPO methodology, ensuring transparency and reproducibility of our findings. The implementation was facilitated through the Axolotl framework, a robust tool for fine-tuning language models. For complete methodological transparency, we have made all [training scripts](./training/) accessible in the designated training directory of our repository. This streamlined approach, centered solely on **DPO steps**, allowed us to isolate and evaluate the effectiveness of preference optimization in modulating ideological positioning within language models.
+
+In our research, we implemented DPO training on a preliminary version of our long-term model development project. The foundation of our work utilized Qwen/Qwen-2.5-7B-Instruct, which underwent fine-tuning using a meticulously curated dataset comprising over one million sophisticated SFT instructions. The resulting model, designated as qwen-5588, exhibited notable characteristics in comparison to its base model. As evidenced by the evaluation metrics presented in our results section, qwen-5588 consistently demonstrated more moderate ideological positions relative to the original Qwen/Qwen-2.5-7B-Instruct model. Our analysis suggests that the integration of authentic Italian cultural data within our curated dataset contributed significantly to this moderation effect. The extensive cultural knowledge embedded in the training data appears to have inherently fostered a more balanced and nuanced positioning, effectively tempering the more extreme tendencies observed in the base model. This finding suggests that cultural contextualization through carefully selected training data can serve as an effective mechanism for achieving more moderate model behaviors. 
+
+In this section we will provides some charts demonstrating that our hypothesis and methods has been validated. In the chart below we evaluate the political position of the base model Qwen/Qwen-2.5-7B-Instruct, the SFT version on highly curated Italian based dataset mii-llm/qwen-5588, the dpo version using left oriented position mii-llm/propaganda-dpo-sx-v01 and the right oriented mii-llm/propaganda-dpo-sx-v01. Has shown in the charts the methodology shows clearly that is possible to move the political opinion of LLMs.
+
+![base sft dpo-sx dpo-dx](./eval/propaganda_evals/charts/base-sft-dpo.png)
+
+
 ---
 
 
@@ -562,6 +573,11 @@ Our analysis results can be found in the repository. We are actively seeking hel
 
 - Expand the range of topics, positions, and parties.
 - Provide a more comprehensive analysis of political bias in LLMs, as these biases may influence public opinion in the future.
+
+---
+## Conclusion <a id="1.4">
+
+The Propaganda Eval framework provides a significant advancement in understanding and influencing political bias within large language models (LLMs). Through a systematic approach combining dataset creation, fine-tuning, and comprehensive evaluation, this study demonstrates the susceptibility of LLMs to ideological alignment and their potential for nuanced ideological steering. The results underscore the critical need for robust evaluation frameworks to identify and mitigate political biases while maintaining the models' general utility. Furthermore, the methodologies applied—ranging from Direct Preference Optimization (DPO) to cultural contextualization—highlight scalable and reproducible paths for tailoring model outputs toward specific ideological orientations. By releasing this framework and its components as open-source, we aim to facilitate cross-disciplinary collaborations and foster transparency in evaluating and training LLMs for political discourse. Future research should build on this foundation to address the ethical implications of deploying ideologically biased models, ensuring that such technologies contribute positively to democratic and inclusive discourse.
 
 ---
 
