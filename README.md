@@ -4,9 +4,15 @@
 
 This framework offers opportunities for expansion in various directions and could become the standard reference for evaluating LLMs on political topics, particularly those that influence public opinion.
 
+The project is divided in three different sections:
+
+### 1. [Evaluations](#1.1)   
+
+### 2. [Dataset Creation](#1.2) 
+
 ---
 
-## Evaluations
+## Evaluations <a id='1.1'></a>
 
 We have created two distinct evaluation tools:
 
@@ -311,7 +317,7 @@ Our analysis results can be found in the repository. We are actively seeking hel
 
 We invite contributions from researchers, social scientists, and anyone interested in expanding this framework. Let’s work together to uncover the biases in LLMs and their potential impact on public opinion.
 
-## Dataset creation
+## Dataset creation <a id="1.2">
 
 To investigate the vulnerability of large language models to political bias, we created multiple datasets focused on political discourse in Italian. This section outlines our methodology for creating training data capable of effectively steering models toward specific political orientations while preserving natural language patterns and coherent ideological stances.
 
